@@ -34,7 +34,6 @@ public class MyPostNotificationReceiver extends BroadcastReceiver {
 
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
-                .setColor(context.getResources().getColor(R.color.blue))
                 .setContentTitle(title)
                 .setContentText(text)
                 .addAction(R.mipmap.ic_done_white_48dp,
