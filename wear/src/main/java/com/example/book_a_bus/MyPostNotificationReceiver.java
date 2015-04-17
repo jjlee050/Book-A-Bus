@@ -32,6 +32,13 @@ public class MyPostNotificationReceiver extends BroadcastReceiver {
         String title = "Book-A-Bus: Bus No. 43";
         String text = "Please go to the next bus stop.";
 
+        int w = 300, h = 300;
+
+        Bitmap.Config conf = Bitmap.Config.RGB_565; // see other conf types
+        Bitmap bmp = Bitmap.createBitmap(w, h, conf); // this creates a MUTABLE bitmap
+        Canvas canvas = new Canvas(bmp);
+        canvas.drawARGB(1,2,117,213);
+
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
                 .setContentTitle(title)
@@ -39,7 +46,7 @@ public class MyPostNotificationReceiver extends BroadcastReceiver {
                 .addAction(R.mipmap.ic_done_white_48dp,
                         "Acknowledge", null)
                 .extend(new Notification.WearableExtender()
-
+                    .setBackground(bmp)
                 )
                 .build();
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);
