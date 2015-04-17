@@ -5,7 +5,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.book_a_bus.AcknowledgeActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+    <TextView
+        android:id='@+id/notify_title'
+        android:layout_marginTop="16dp"
+        android:text="@string/hello_world" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

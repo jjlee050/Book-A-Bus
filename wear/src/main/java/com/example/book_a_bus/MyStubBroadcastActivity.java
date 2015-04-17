@@ -10,12 +10,12 @@ import android.os.Bundle;
  */
 public class MyStubBroadcastActivity extends Activity {
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         Intent i = new Intent();
         i.setAction("com.example.book_a_bus.SHOW_NOTIFICATION");
-        i.putExtra(MyPostNotificationReceiver.CONTENT_KEY, "Please go to the next bus stop.");
+        //i.putExtra(MyPostNotificationReceiver.CONTENT_KEY, "Please go to the next bus stop.");
         sendBroadcast(i);
         finish();
     }
