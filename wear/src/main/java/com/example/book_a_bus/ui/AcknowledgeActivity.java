@@ -1,4 +1,4 @@
-package com.example.book_a_bus;
+package com.example.book_a_bus.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.book_a_bus.R;
 
 
 public class AcknowledgeActivity extends Activity {

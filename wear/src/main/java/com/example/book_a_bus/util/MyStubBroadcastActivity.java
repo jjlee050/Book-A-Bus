@@ -1,4 +1,4 @@
-package com.example.book_a_bus;
+package com.example.book_a_bus.util;
 
 import android.app.Activity;
 import android.content.Intent;

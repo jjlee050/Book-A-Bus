@@ -1,23 +1,16 @@
-package com.example.book_a_bus;
+package com.example.book_a_bus.util;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.app.Notification;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
-import android.view.Display;
 import android.widget.Toast;
+
+import com.example.book_a_bus.R;
+import com.example.book_a_bus.ui.AcknowledgeActivity;
 
 
 public class MyPostNotificationReceiver extends BroadcastReceiver {
@@ -46,7 +39,7 @@ public class MyPostNotificationReceiver extends BroadcastReceiver {
                 .addAction(R.mipmap.ic_done_white_48dp,
                         "Acknowledge", null)
                 .extend(new Notification.WearableExtender()
-                    .setBackground(bmp)
+                                .setBackground(bmp)
                 )
                 .build();
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);
