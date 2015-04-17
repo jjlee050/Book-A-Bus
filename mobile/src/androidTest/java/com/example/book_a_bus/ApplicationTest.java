@@ -1,4 +1,4 @@
-package com.sg_happenings.book_a_bus;
+package com.example.book_a_bus;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

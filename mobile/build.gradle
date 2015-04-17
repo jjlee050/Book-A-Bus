@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.sg_happenings.book_a_bus"
+        applicationId "com.example.book_a_bus"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -20,6 +20,5 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/apigee-android-2.0.14.jar')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
