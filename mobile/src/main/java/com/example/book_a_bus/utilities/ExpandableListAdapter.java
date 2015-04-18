@@ -7,7 +7,9 @@ package com.example.book_a_bus.utilities;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.book_a_bus.R;
+import com.example.book_a_bus.ui.NotificationActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -216,6 +219,27 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     testObject.put("userID", "testuser");
                     try {
                         testObject.save();
+
+                        // prepare intent which is triggered if the
+                        // notification is selected
+                        Intent intent = new Intent(_context, NotificationActivity.class);
+                        intent.putExtra("busStopNo", busStopNo);
+                        intent.putExtra("busServiceNo", title);
+                        intent.putExtra("busDeviceID", "leezx");
+                        intent.putExtra("userID", "testuser");
+                        PendingIntent pIntent = PendingIntent.getActivity(_context.getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                        Notification notification = new Notification.Builder(_context)
+                                .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
+                                .setContentTitle("Book-A-Bus")
+                                .setContentText("Someone flagged!")
+                                .addAction(R.mipmap.ic_done_white_48dp,
+                                        "Acknowledge", pIntent)
+                                .build();
+                        // hide the notification after its selected
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        ((NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -238,22 +262,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     for(int i = 0;i < objectArrList.size();i++){
                         objectArrList.get(i).delete();
                     }
+                    return true;
                 }
             }
             catch(Exception ex){
                 ex.printStackTrace();
             }
         }
-
-        Notification notification = new Notification.Builder(_context)
-                .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
-                .setContentTitle("Book-A-Bus")
-                .setContentText("Someone flagged!")
-                .addAction(R.mipmap.ic_done_white_48dp,
-                        "Acknowledge", null)
-                .build();
-
-        ((NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);
 
         return true;
     }

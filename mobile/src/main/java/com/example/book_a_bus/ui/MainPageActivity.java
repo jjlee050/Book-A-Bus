@@ -116,7 +116,9 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
             bat.executeGetArrivalTimeInfo(currentLat, currentLon, "300"); //500 is the distance in metres
             count++;
         }
+        else{
 
+        }
 
     }
 
