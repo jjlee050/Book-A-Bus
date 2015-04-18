@@ -63,8 +63,6 @@ public class DisplayBusesActivity extends ActionBarActivity {
         // preparing list data
         prepareListData();
 
-
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
@@ -93,7 +91,7 @@ public class DisplayBusesActivity extends ActionBarActivity {
         super.onStart();
         mGoogleApiClient.connect();
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, mGoogleApiClient);
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, mGoogleApiClient, getSupportActionBar().getTitle().toString());
 
         // setting list adapter
         listView.setAdapter(listAdapter);

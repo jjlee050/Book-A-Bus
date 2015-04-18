@@ -18,6 +18,7 @@ import com.example.book_a_bus.listeners.TaskListener;
 import com.example.book_a_bus.objectmodel.BusArrivalInfo;
 import com.example.book_a_bus.objectmodel.SBSInfo;
 import com.example.book_a_bus.tasks.BusArrivalTask;
+import com.parse.Parse;
 
 import org.parceler.Parcels;
 
@@ -31,6 +32,7 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
     ArrayList<SBSInfo> sbsInfoList = new ArrayList<SBSInfo>();
     ArrayList<BusArrivalInfo> busArrList = new ArrayList<BusArrivalInfo>();
     Fragment currentLocationfragment;
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
 
         }
 
-
+        Parse.initialize(this, "ruT5dOVLpbFF2CTb2UiNeTtsJT4y5pxALbpZBMuD", "DWl34cGFBUycYLmSpjz83A7jqA2MGgU1PO0gQ2mm");
     }
 
 
@@ -102,14 +104,18 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
 
     @Override
     public void onLocationChanged(Location location) {
+
         double lat = (double) (location.getLatitude());
         double lng = (double) (location.getLongitude());
         currentLat = String.valueOf(lat);
         currentLon = String.valueOf(lng);
-        //To Start the task for Bus Arrival
-        BusArrivalTask bat = new BusArrivalTask(MainPageActivity.this);
-        bat.executeGetArrivalTimeInfo(currentLat, currentLon, "300"); //500 is the distance in metres
-
+        if(count == 0)
+        {
+            //To Start the task for Bus Arrival
+            BusArrivalTask bat = new BusArrivalTask(MainPageActivity.this);
+            bat.executeGetArrivalTimeInfo(currentLat, currentLon, "300"); //500 is the distance in metres
+            count++;
+        }
 
 
     }
@@ -136,7 +142,8 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
     @Override
     public void onPreExecute(Class<?> cname) {
         // TODO Auto-generated method stub
-
+        sbsInfoList.clear();
+        busArrList.clear();
     }
 
     @Override

@@ -42,6 +42,12 @@ public class MainPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_page, container, false);
         final ListView lvBusStops = (ListView) rootView.findViewById(R.id.list_bus_stops);
+        allBusStop_busList.clear();
+        busStopNoList.clear();
+        busArrivalInfoList.clear();
+        if(lvBusStops.getCount() > 0)
+            lvBusStops.removeAllViews();
+
         if (getArguments() != null) {
             lat = getArguments().getString("lat");
             lon = getArguments().getString("lon");
@@ -77,7 +83,9 @@ public class MainPageFragment extends Fragment {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, busStopNoList);
-
+        lvBusStops.invalidateViews();
+        adapter.notifyDataSetChanged();
+        lvBusStops.setAdapter(null);
         lvBusStops.setAdapter(adapter);
 
         // ListView Item Click Listener

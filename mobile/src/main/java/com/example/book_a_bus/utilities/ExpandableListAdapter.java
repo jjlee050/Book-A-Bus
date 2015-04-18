@@ -11,15 +11,19 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.book_a_bus.R;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +36,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private HashMap<String, List<String>> _listDataChild;
     private GoogleApiClient mGoogleApiClient;
 
+    private String actionBarTitle;
 
     public static final String NOTIFICATION_PATH = "/notification";
     public static final String NOTIFICATION_TIMESTAMP = "timestamp";
@@ -40,12 +45,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     public static final String ACTION_DISMISS = "com.example.book_a_bus.utilities.DISMISS";
 
+    private ToggleButton toggleBtn;
+
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData, GoogleApiClient mGoogleApiClient) {
+                                 HashMap<String, List<String>> listChildData, GoogleApiClient mGoogleApiClient,
+                                 String actionBarTitle) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
         this.mGoogleApiClient = mGoogleApiClient;
+        this.actionBarTitle = actionBarTitle;
     }
 
     @Override
@@ -112,13 +121,65 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.tv_header);
-        ToggleButton toggleBtn = (ToggleButton) convertView.findViewById(R.id.flag_toggle_btn);
-        toggleBtn.setTextOff("Off");
-        toggleBtn.setOnTouchListener(new View.OnTouchListener() {
+
+        toggleBtn = (ToggleButton) convertView.findViewById(R.id.flag_toggle_btn);
+        toggleBtn.setTextOff("Flag");
+        toggleBtn.setTextOn("Flagged");
+        toggleBtn.setText("Flag");
+        toggleBtn.setId(Integer.parseInt(getGroup(groupPosition).toString()));
+
+        ParseQuery query = ParseQuery.getQuery("Flag");
+        query.whereEqualTo("busStopNo", actionBarTitle.substring(actionBarTitle.length()-6 , actionBarTitle.length()));
+        query.whereEqualTo("busServiceNo",  getGroup(groupPosition));
+        query.whereEqualTo("busDeviceID", "leezx");
+        query.whereEqualTo("userID", "testuser");
+        try{
+            List<ParseObject> objectArrList = query.find();
+            if(objectArrList.size() > 0){
+                for(int i = 0;i < objectArrList.size();i++){
+                    if(headerTitle.equals(objectArrList.get(i).getString("busServiceNo"))){
+                        toggleBtn.toggle();
+                    }
+                }
+            }
+        }
+        catch(Exception ex){
+
+        }
+        /*toggleBtn.setOnCheckedChangeListener(new {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                sendNotification((String)getGroup(groupPosition), (String)getChild(groupPosition,0));
+
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN ) {
+                    if(toggleBtn.isChecked()==true) {
+                        sendNotification((String) getGroup(groupPosition), "Flagged");
+                    }
+                    else{
+                        sendNotification((String) getGroup(groupPosition), "Flag");
+                    }
+                    return true;
+                }
                 return false;
+            }
+        });*/
+
+        toggleBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(buttonView.isChecked()==true) {
+                    boolean check = sendNotification((String) getGroup(groupPosition), "Flagged");
+                    if(!check) {
+                        buttonView.toggle();
+                    }
+                }
+                else{
+                    boolean check = sendNotification((String) getGroup(groupPosition), "Flag");
+                    if(!check) {
+                        buttonView.toggle();
+                    }
+                }
             }
         });
 
@@ -129,16 +190,73 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void sendNotification(String title, String content) {
+    private boolean sendNotification(String title, String options) {
+        String busStopNo = actionBarTitle.substring(actionBarTitle.length()-6 , actionBarTitle.length());
+
+        System.out.println(options);
+        System.out.println("Bus Stop No: " + busStopNo);
+        System.out.println("Bus Service No: " + title);
+
+        ParseQuery checkQuery = ParseQuery.getQuery("Flag");
+        checkQuery.whereEqualTo("busStopNo", busStopNo);
+        checkQuery.whereEqualTo("busDeviceID", "leezx");
+        checkQuery.whereEqualTo("userID", "testuser");
+
+        if(options.equals("Flagged")) {
+            try{
+                List<ParseObject> objectArrList = checkQuery.find();
+                if(objectArrList.size() > 0){
+                    Toast.makeText(_context, "You have already flagged a bus", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                else{
+                    ParseObject testObject = new ParseObject("Flag");
+                    testObject.put("busStopNo", busStopNo);
+                    testObject.put("busServiceNo", title);
+                    testObject.put("busDeviceID", "leezx");
+                    testObject.put("userID", "testuser");
+                    try {
+                        testObject.save();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+            }
+
+        }
+        else{
+            ParseQuery query = ParseQuery.getQuery("Flag");
+            query.whereEqualTo("busStopNo", busStopNo);
+            query.whereEqualTo("busServiceNo", title);
+            query.whereEqualTo("busDeviceID", "leezx");
+            query.whereEqualTo("userID", "testuser");
+            try{
+                List<ParseObject> objectArrList = query.find();
+                if(objectArrList.size() > 0){
+                    for(int i = 0;i < objectArrList.size();i++){
+                        objectArrList.get(i).delete();
+                    }
+                }
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
         Notification notification = new Notification.Builder(_context)
                 .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
-                .setContentTitle("Book-A-Bus: Bus No. " + title)
-                .setContentText("There is a passenger at the next bus stop.")
+                .setContentTitle("Book-A-Bus")
+                .setContentText("Someone flagged!")
                 .addAction(R.mipmap.ic_done_white_48dp,
                         "Acknowledge", null)
                 .build();
 
         ((NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);
+
+        return true;
     }
 
     @Override
