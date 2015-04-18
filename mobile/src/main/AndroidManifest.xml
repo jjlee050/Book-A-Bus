@@ -8,8 +8,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_directions_bus_white_48dp"
-        android:label="@string/app_name"
+        android:icon="@mipmap/ic_directions_bus_black_48dp"
+        android:label="Book-A-Bus"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
@@ -23,6 +23,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.DisplayBusesActivity"
+            android:label="@string/title_activity_display_buses"
+            android:parentActivityName=".ui.MainPageActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainPageActivity" />
         </activity>
     </application>
 

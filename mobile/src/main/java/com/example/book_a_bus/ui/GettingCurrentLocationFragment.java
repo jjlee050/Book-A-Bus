@@ -20,6 +20,7 @@ public class GettingCurrentLocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_getting_current_location, container, false);
+
         return rootView;
     }
 }
