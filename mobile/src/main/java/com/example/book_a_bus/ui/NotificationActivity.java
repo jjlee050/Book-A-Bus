@@ -19,7 +19,6 @@ public class NotificationActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
 
         savedInstanceState = getIntent().getExtras();
         String busStopNo = savedInstanceState.getString("busStopNo");

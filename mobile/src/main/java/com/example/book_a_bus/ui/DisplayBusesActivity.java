@@ -42,6 +42,9 @@ public class DisplayBusesActivity extends ActionBarActivity {
     ArrayList<ArrayList<BusArrivalTimeInfo>> allBusStop_busList = new ArrayList<ArrayList<BusArrivalTimeInfo>>();
     int position;
 
+    String lat;
+    String lon;
+
     private GoogleApiClient mGoogleApiClient;
     private final String TAG="GoogleApi";
     @Override
@@ -53,6 +56,10 @@ public class DisplayBusesActivity extends ActionBarActivity {
         position = savedInstanceState.getInt("position");
         String busStopName = savedInstanceState.getString("bus_stop");
         Parcelable wrapped = savedInstanceState.getParcelable("bus_service_no");
+
+        lat = savedInstanceState.getString("lat");
+        lon = savedInstanceState.getString("lon");
+
         allBusStop_busList = Parcels.unwrap(wrapped);
 
         getSupportActionBar().setTitle(busStopName);
@@ -91,7 +98,7 @@ public class DisplayBusesActivity extends ActionBarActivity {
         super.onStart();
         mGoogleApiClient.connect();
 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, mGoogleApiClient, getSupportActionBar().getTitle().toString());
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild, mGoogleApiClient, getSupportActionBar().getTitle().toString(), lat, lon);
 
         // setting list adapter
         listView.setAdapter(listAdapter);

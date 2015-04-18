@@ -1,6 +1,7 @@
 package com.example.book_a_bus.ui;
 
 import android.app.Fragment;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -19,10 +20,15 @@ import com.example.book_a_bus.objectmodel.BusArrivalInfo;
 import com.example.book_a_bus.objectmodel.SBSInfo;
 import com.example.book_a_bus.tasks.BusArrivalTask;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.PushService;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainPageActivity extends ActionBarActivity implements TaskListener, LocationListener {
 
@@ -38,6 +44,15 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(0);
+
+        Parse.initialize(this, "ruT5dOVLpbFF2CTb2UiNeTtsJT4y5pxALbpZBMuD", "DWl34cGFBUycYLmSpjz83A7jqA2MGgU1PO0gQ2mm");
+        PushService.setDefaultPushCallback(this, MainPageActivity.class);
+
+        ParseInstallation.getCurrentInstallation().saveInBackground();
+
         currentLocationfragment = new GettingCurrentLocationFragment();
 
         getFragmentManager().beginTransaction().add(R.id.container, currentLocationfragment).commit();
@@ -65,8 +80,6 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
             getSupportActionBar().setTitle("Main Page");
 
         }
-
-        Parse.initialize(this, "ruT5dOVLpbFF2CTb2UiNeTtsJT4y5pxALbpZBMuD", "DWl34cGFBUycYLmSpjz83A7jqA2MGgU1PO0gQ2mm");
     }
 
 
@@ -118,6 +131,22 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
         }
         else{
 
+            ParseQuery query = ParseQuery.getQuery("Flag");
+            query.whereEqualTo("busDeviceID", "leezx");
+            query.whereEqualTo("userID", "testuser");
+            query.whereNotEqualTo("lat",lat);
+            query.whereNotEqualTo("lon",lng);
+            try{
+                List<ParseObject> objectArrList = query.find();
+                if(objectArrList.size() > 0){
+                    for(int i = 0;i < objectArrList.size();i++){
+                        objectArrList.get(i).delete();
+                    }
+                }
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+            }
         }
 
     }

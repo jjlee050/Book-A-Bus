@@ -105,6 +105,8 @@ public class MainPageFragment extends Fragment {
                 Parcelable wrapped = Parcels.wrap( allBusStop_busList);
                 i.putExtra("bus_service_no", wrapped);
                 i.putExtra("position", itemPosition);
+                i.putExtra("lat",lat);
+                i.putExtra("lon",lon);
                 MainPageFragment.this.getActivity().startActivity(i);
             }
         });

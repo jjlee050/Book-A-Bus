@@ -5,13 +5,10 @@ package com.example.book_a_bus.utilities;
  */
 
 import android.annotation.TargetApi;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +19,14 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.book_a_bus.R;
-import com.example.book_a_bus.ui.NotificationActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,14 +50,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private ToggleButton toggleBtn;
 
+    private String lat;
+    private String lon;
+
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData, GoogleApiClient mGoogleApiClient,
-                                 String actionBarTitle) {
+                                 String actionBarTitle, String lat, String lon) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
         this.mGoogleApiClient = mGoogleApiClient;
         this.actionBarTitle = actionBarTitle;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     @Override
@@ -217,10 +222,36 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     testObject.put("busServiceNo", title);
                     testObject.put("busDeviceID", "leezx");
                     testObject.put("userID", "testuser");
+                    testObject.put("lat",lat);
+                    testObject.put("lon",lon);
                     try {
                         testObject.save();
 
-                        // prepare intent which is triggered if the
+                        /*ParsePush.subscribeInBackground("leezx", new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                                } else {
+                                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                                }
+                            }
+                        });*/
+
+                        String message = "Someone flagged!";
+                        JSONObject data = new JSONObject();
+                        data.put("alert",message);
+                        data.put("action", "com.example.book_a_bus.ui.NotificationActivity");
+                        data.put("busStopNo", busStopNo);
+                        data.put("busServiceNo", title);
+                        data.put("installationId", "4c78bf79-a228-4634-9cf8-4b4c7ef90bdb");
+                        data.put("lat",lat);
+                        data.put("lon",lon);
+                        ParsePush push = new ParsePush();
+                        push.setData(data);
+                        push.send();
+
+                        /*// prepare intent which is triggered if the
                         // notification is selected
                         Intent intent = new Intent(_context, NotificationActivity.class);
                         intent.putExtra("busStopNo", busStopNo);
@@ -239,7 +270,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         // hide the notification after its selected
                         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-                        ((NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);
+                        ((NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notification);*/
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
