@@ -20,9 +20,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -51,17 +49,8 @@ public class NotificationUpdateService extends WearableListenerService {
     }
 
     @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        for(DataEvent dataEvent: dataEvents) {
-            if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
-                if (NOTIFICATION_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
-                    DataMapItem dataMapItem = DataMapItem.fromDataItem(dataEvent.getDataItem());
-                    String title = dataMapItem.getDataMap().getString(NOTIFICATION_TITLE);
-                    String content = dataMapItem.getDataMap().getString(NOTIFICATION_CONTENT);
-                    sendNotification(title, content);
-                }
-            }
-        }
+    public void onMessageReceived(MessageEvent messageEvent) {
+        Log.i("INFO", "We got it!");
     }
 
     private void sendNotification(String title, String content) {
@@ -85,6 +74,7 @@ public class NotificationUpdateService extends WearableListenerService {
                 .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setContentIntent(pendingViewIntent)
                 .addAction(R.mipmap.ic_done_white_48dp,
                         "Acknowledge", null)
                 .extend(new Notification.WearableExtender()
