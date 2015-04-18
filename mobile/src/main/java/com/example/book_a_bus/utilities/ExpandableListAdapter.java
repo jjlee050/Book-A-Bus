@@ -132,8 +132,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private void sendNotification(String title, String content) {
         Notification notification = new Notification.Builder(_context)
                 .setSmallIcon(R.mipmap.ic_directions_bus_black_48dp)
-                .setContentTitle(title)
-                .setContentText(content)
+                .setContentTitle("Book-A-Bus: Bus No. " + title)
+                .setContentText("There is a passenger at the next bus stop.")
                 .addAction(R.mipmap.ic_done_white_48dp,
                         "Acknowledge", null)
                 .build();

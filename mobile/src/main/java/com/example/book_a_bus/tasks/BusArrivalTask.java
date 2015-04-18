@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.book_a_bus.listeners.TaskListener;
 import com.example.book_a_bus.objectmodel.BusArrivalInfo;
+import com.example.book_a_bus.objectmodel.BusArrivalTimeInfo;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -15,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -131,21 +133,30 @@ public class BusArrivalTask extends BaseTask<NameValuePair, BusArrivalInfo, BusA
                 String lon = locationList.getString(ATTR_LON);
 
                 JSONArray busArrivalList = result.getJSONArray("bus_arrival");
-                JSONObject result2 = busArrivalList.getJSONObject(0);
-                String serviceNo = result2.getString(ATTR_SERVICE_NO);
-                String status = result2.getString(ATTR_STATUS);
+                ArrayList<BusArrivalTimeInfo> busArrivalTimeList = new ArrayList<BusArrivalTimeInfo>();
 
-                JSONObject nextBusList = result2.getJSONObject("nextbus");
-                String estimatedArr = nextBusList.getString(ATTR_ESTIMATED_ARRIVAL);
-                String load = nextBusList.getString(ATTR_LOAD);
-                String feature = nextBusList.getString(ATTR_FEATURE);
+                for(int z = 0; z < busArrivalList.length(); z++)
+                {
+                    JSONObject result2 = busArrivalList.getJSONObject(z);
+                    String serviceNo = result2.getString(ATTR_SERVICE_NO);
+                    String status = result2.getString(ATTR_STATUS);
 
-                JSONObject subsequentBusList = result2.getJSONObject("subsequentbus");
-                String estimatedArrS = subsequentBusList.getString(ATTR_ESTIMATED_ARRIVAL);
-                String loadS = subsequentBusList.getString(ATTR_LOAD);
-                String featureS = subsequentBusList.getString(ATTR_FEATURE);
+                    JSONObject nextBusList = result2.getJSONObject("nextbus");
+                    String estimatedArr = nextBusList.getString(ATTR_ESTIMATED_ARRIVAL);
+                    String load = nextBusList.getString(ATTR_LOAD);
+                    String feature = nextBusList.getString(ATTR_FEATURE);
 
-                BusArrivalInfo busArrInfo = new BusArrivalInfo(busStopNo, busDesc, lat, lon, serviceNo, status, estimatedArr, load, feature, estimatedArrS, loadS, featureS);
+                    JSONObject subsequentBusList = result2.getJSONObject("subsequentbus");
+                    String estimatedArrS = subsequentBusList.getString(ATTR_ESTIMATED_ARRIVAL);
+                    String loadS = subsequentBusList.getString(ATTR_LOAD);
+                    String featureS = subsequentBusList.getString(ATTR_FEATURE);
+
+                    BusArrivalTimeInfo batList = new BusArrivalTimeInfo(serviceNo, status, estimatedArr, load, feature, estimatedArrS, loadS, featureS);
+                    busArrivalTimeList.add(batList);
+                }
+
+
+                BusArrivalInfo busArrInfo = new BusArrivalInfo(busStopNo, busDesc, lat, lon, busArrivalTimeList);
                 //publishprogress to the onPreExecute in MainActivity. Basically throwing the object to the mainactivity to display, etc.
                 publishProgress(busArrInfo);
 				

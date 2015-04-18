@@ -17,13 +17,7 @@ import com.example.book_a_bus.objectmodel.BusArrivalInfo;
 import com.example.book_a_bus.objectmodel.SBSInfo;
 import com.example.book_a_bus.tasks.BusArrivalTask;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class MainActivity extends Activity implements TaskListener, LocationListener {
 
@@ -127,9 +121,6 @@ public class MainActivity extends Activity implements TaskListener, LocationList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -189,7 +180,7 @@ public class MainActivity extends Activity implements TaskListener, LocationList
 
 
 
-        for(int i = 0; i < busArrList.size(); i++)
+       /* for(int i = 0; i < busArrList.size(); i++)
         {
             String dateArrTime = "";
             String timeArrTime = "";
@@ -271,7 +262,7 @@ public class MainActivity extends Activity implements TaskListener, LocationList
 
 
 
-        }
+        }*/
 
 
         test.setText(temp);
