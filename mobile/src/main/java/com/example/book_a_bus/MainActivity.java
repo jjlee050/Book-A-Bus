@@ -7,8 +7,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.book_a_bus.listeners.TaskListener;
+import com.example.book_a_bus.objectmodel.BusArrivalInfo;
 import com.example.book_a_bus.objectmodel.SBSInfo;
-import com.example.book_a_bus.tasks.SBSTInfoSetTask;
+import com.example.book_a_bus.tasks.BusArrivalTask;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,8 @@ public class MainActivity extends Activity implements TaskListener {
 
     ArrayList<SBSInfo> sbsInfoList = new ArrayList<SBSInfo>();
 
+    ArrayList<BusArrivalInfo> busArrList = new ArrayList<BusArrivalInfo>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +33,11 @@ public class MainActivity extends Activity implements TaskListener {
         test = (TextView) findViewById(R.id.test);
 
         //To Start the task
-        SBSTInfoSetTask s = new SBSTInfoSetTask(MainActivity.this);
-        s.executeGetSBSInfo();
+
+        //BusServiceInfoTask s = new BusServiceInfoTask(MainActivity.this);
+      // s.executeGetSBSInfo("SBST");
+        BusArrivalTask bat = new BusArrivalTask(MainActivity.this);
+        bat.executeGetArrivalTimeInfo("1.379820", "103.879626", "500");
     }
 
     @Override
@@ -71,6 +77,11 @@ public class MainActivity extends Activity implements TaskListener {
                 SBSInfo sbsInfo = (SBSInfo) value;
                 sbsInfoList.add(sbsInfo);
             }
+            else if (value instanceof BusArrivalInfo)
+            {
+                BusArrivalInfo baInfo = (BusArrivalInfo) value;
+                busArrList.add(baInfo);
+            }
         }
     }
 
@@ -79,9 +90,10 @@ public class MainActivity extends Activity implements TaskListener {
         // TODO Auto-generated method stub
         String temp = "";
         //Display it on the textview.
-        for(int i = 0; i < sbsInfoList.size(); i++)
+       /*for(int i = 0; i < sbsInfoList.size(); i++)
         {
             temp += "Bus Service Number: " + sbsInfoList.get(i).getBusServiceNo()
+                    + "\nBus Service: " + sbsInfoList.get(i).getBusService()
                     + "\nLoop Direction: " + sbsInfoList.get(i).getDirectionNo()
                     + "\nCategory: " + sbsInfoList.get(i).getCategory()
                     + "\nStarting Location: " + sbsInfoList.get(i).getStartLocation()
@@ -91,7 +103,35 @@ public class MainActivity extends Activity implements TaskListener {
                     + "\nFreq Pm Peak: " + sbsInfoList.get(i).getPmPeakFreq()
                     + "\nFreq Pm Off Peak: " + sbsInfoList.get(i).getPmOffPeakFreq()
                     + "\nLoop Location: " + sbsInfoList.get(i).getLocationLoop() + "\n\n";
+
+        }*/
+
+       /* for(int i = 0; i < busStopList.size(); i++)
+        {
+            temp += "Bus Code: " + busStopList.get(i).getBusStopCode()
+                    + "\nBus Road: " + busStopList.get(i).getBusStopRoad()
+                    + "\nBus Desc: " + busStopList.get(i).getBusStopDesc() + "\n\n";
+        }*/
+
+        for(int i = 0; i < busArrList.size(); i++)
+        {
+            temp += "Bus Stop No: " + busArrList.get(i).getBusStopNo()
+                    + "\nBus Desc: " + busArrList.get(i).getBusStopDesc()
+                    + "\nLat: " + busArrList.get(i).getLat()
+                    + "\nLon: " + busArrList.get(i).getLon()
+                    + "\nServiceNo: " + busArrList.get(i).getServiceNo()
+                    + "\nStatus: " + busArrList.get(i).getStatus()
+                    + "\nEstimated Arr: " + busArrList.get(i).getEstimated_Arr()
+                    + "\nLoad: " + busArrList.get(i).getLoad()
+                    + "\nFeature: " + busArrList.get(i).getFeature()
+                    + "\nEstimated ArrS: " + busArrList.get(i).getEstimated_ArrS()
+                    + "\nLoadS: " + busArrList.get(i).getLoadS()
+                    + "\nFeatureS: " + busArrList.get(i).getFeatureS() + "\n\n";
+
         }
+
+        //Bus Arrival Time show GMT +0 Timing instead of GMT +8
+        //API EstimatedArrival – Singapore Standard Time = Ariival Time
 
         test.setText(temp);
     }
