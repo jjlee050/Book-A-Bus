@@ -2,6 +2,7 @@ package com.example.book_a_bus.objectmodel;
 
 public class SBSInfo {
 
+    private String busService;
 	private String busServiceNo;
 	private String directionNo;
 	private String category;
@@ -16,11 +17,12 @@ public class SBSInfo {
 	public SBSInfo(){}
 	
 
-	public SBSInfo(String busServiceNo, String directionNo, String category,
+	public SBSInfo(String busService, String busServiceNo, String directionNo, String category,
 			String startLocation, String endLocation, String amPeakFreq,
 			String amOffPeakFreq, String pmPeakFreq, String pmOffPeakFreq,
 			String locationLoop) {
 		super();
+        this.busService = busService;
 		this.busServiceNo = busServiceNo;
 		this.directionNo = directionNo;
 		this.category = category;
@@ -33,7 +35,13 @@ public class SBSInfo {
 		this.locationLoop = locationLoop;
 	}
 
+    public String getBusService() {
+        return busService;
+    }
 
+    public void setBusService(String busService) {
+        this.busService = busService;
+    }
 
 	public String getBusServiceNo() {
 		return busServiceNo;
