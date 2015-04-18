@@ -126,7 +126,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         toggleBtn.setTextOff("Flag");
         toggleBtn.setTextOn("Flagged");
         toggleBtn.setText("Flag");
-        toggleBtn.setId(Integer.parseInt(getGroup(groupPosition).toString()));
 
         ParseQuery query = ParseQuery.getQuery("Flag");
         query.whereEqualTo("busStopNo", actionBarTitle.substring(actionBarTitle.length()-6 , actionBarTitle.length()));
