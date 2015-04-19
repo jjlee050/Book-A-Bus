@@ -45,8 +45,20 @@ public class MainPageActivity extends ActionBarActivity implements TaskListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(0);
+        ParseQuery query = ParseQuery.getQuery("Flag");
+        query.whereEqualTo("busStopNo", "28059");
+        try{
+            List<ParseObject> objectArrList = query.find();
+
+            for(int i = 0;i < objectArrList.size();i++){
+                objectArrList.get(i).delete();
+            }
+            NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.cancel(0);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }
 
         Parse.initialize(this, "ruT5dOVLpbFF2CTb2UiNeTtsJT4y5pxALbpZBMuD", "DWl34cGFBUycYLmSpjz83A7jqA2MGgU1PO0gQ2mm");
         PushService.setDefaultPushCallback(this, MainPageActivity.class);
